@@ -7,6 +7,8 @@ functional, anything can change at any time and documentation maybe lacking.*
 
 ## Table of contents
 * [Feature Demo](#feature-demo)
+    * [Traversing different types of visual selection](#traversing-different-types-of-visual-selection)
+    * [You can also give a count](#you-can-also-give-a count)
 * [Usage](#usage)
     * [Traversing the visual selection history](#traversing-the-visual-selection-history)
     * [Settings](#settings)
@@ -20,7 +22,14 @@ functional, anything can change at any time and documentation maybe lacking.*
 * [License](#license)
 
 ## Feature demo
+
+### Traversing different types of visual selection
+
 ![demo](https://github.com/Matt-A-Bennett/vim_plugin_external_docs/blob/master/vim-visual-history/visual_history_annotated.gif)
+
+### You can also give a count
+
+![demo](https://github.com/Matt-A-Bennett/vim_plugin_external_docs/blob/master/vim-visual-history/visual_history_count_annotated.gif)
 
 ## Usage
 
