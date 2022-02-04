@@ -1,4 +1,4 @@
-*visual-history.txt* (v0.3.1) Keep a traversable record of previous visual
+*visual-history.txt* (v0.4.0) Keep a traversable record of previous visual
 selections.
 
 License: Same terms as Vim itself (see |license|)
