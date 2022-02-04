@@ -125,7 +125,7 @@ vnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_re
 "}}}---------------------------------------------------------------------------
 
 "{{{- create maps and text objects --------------------------------------------
-if !exists("g:surround_funk_create_mappings") || g:surround_funk_create_mappings != 0
+if !exists("g:visual_history_create_mappings") || g:visual_history_create_mappings != 0
 
     vmap <silent> [v <Plug>(SelectPrevious)
     vmap <silent> ]v <Plug>(SelectNext)
