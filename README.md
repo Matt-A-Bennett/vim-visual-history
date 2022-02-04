@@ -1,9 +1,9 @@
 # vim-visual-history
 
+A Vim plugin that keeps a traversable record of previous visual selections
+
 *This plugin is in an initial testing phase. While it should always be
 functional, anything can change at any time and documentation maybe lacking.*
-
-A Vim plugin that keeps a traversable record of previous visual selections
 
 In visual mode, 4 commands are defined:
 
