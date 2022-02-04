@@ -6,6 +6,7 @@ A Vim plugin that keeps a traversable record of previous visual selections
 functional, anything can change at any time and documentation maybe lacking.*
 
 ## Table of contents
+* [Feature Demo](#feature-demo)
 * [Usage](#usage)
     * [Traversing the visual selection history](#traversing-the-visual-selection-history)
     * [Settings](#settings)
@@ -17,6 +18,9 @@ functional, anything can change at any time and documentation maybe lacking.*
     * [Request a feature](#request-a-feature)
 * [My other plugins](#my-other-plugins)
 * [License](#license)
+
+## Feature demo
+![demo](https://github.com/Matt-A-Bennett/vim_plugin_external_docs/blob/master/vim-visual-history/visual_history_annotated.gif)
 
 ## Usage
 
