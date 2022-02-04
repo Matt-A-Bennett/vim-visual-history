@@ -117,7 +117,7 @@ endfunction
 "}}}---------------------------------------------------------------------------
 
 autocmd CursorMoved * call <SID>update_visual_mark_list()
-autocmd BufEnter * call <SID>initalise_variables()
+autocmd BufEnter    * call <SID>initalise_variables()
 
 "=============================== CREATE MAPS ==================================
 
