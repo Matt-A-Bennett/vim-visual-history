@@ -12,7 +12,6 @@ In visual mode, 4 commands are defined:
 ]v : Reselect next visual selection
 [V : Reselect first visual selection
 ]V : Reselect last visual selection
-
 ```
 
 Note that only visual selections where the cursor moves are remembered (so
