@@ -90,16 +90,24 @@ function! s:get_record()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- reselect_visual_from_record ---------------------------------------------
-function! s:reselect_visual_from_record(direction)
-    let direction = a:direction
-    if direction ==# 'first'
+"{{{- process_direction -------------------------------------------------------
+function! s:process_direction(direction)
+    if type(a:direction) == type(0)
+        let direction = a:direction*v:count1
+    elseif a:direction ==# 'first'
         let b:vis_mark_record_pointer = 1
         let direction = -1
-    elseif direction ==# 'last'
+    elseif a:direction ==# 'last'
         let b:vis_mark_record_pointer = len(b:vis_mark_record)-2
         let direction = 1
     endif
+    return direction
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- reselect_visual_from_record ---------------------------------------------
+function! s:reselect_visual_from_record(direction)
+    let direction = s:process_direction(a:direction)
     if b:vis_mark_record_pointer+1 >= len(b:vis_mark_record) && direction == 1 ||
      \ b:vis_mark_record_pointer   <= 0                      && direction == -1
         normal! gv
