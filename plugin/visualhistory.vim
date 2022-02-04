@@ -9,7 +9,7 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.2.0
+" Version:      0.2.1
 " License:      Same as Vim's (see :help license)
 "
 "
