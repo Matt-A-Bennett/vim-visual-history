@@ -133,7 +133,7 @@ you would like and I'll see what I can do! If you would like to submit a pull
 request, then do so (please let me know this is your plan first in a [new issue](https://github.com/Matt-A-Bennett/vim-visual-history/issues)).
 
 ## My other plugins
- - [vim-visual-history](https://github.com/Matt-A-Bennett/vim-visual-history):  A
+ - [vim-surround-funk](https://github.com/Matt-A-Bennett/vim-surround-funk):  A
    Vim plugin to manipulate function calls 
  - [vim-visual-history](https://github.com/Matt-A-Bennett/vim-visual-history):
    A Vim plugin that keeps a traversable record of previous visual selections
