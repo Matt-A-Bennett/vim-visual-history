@@ -25,7 +25,7 @@ to something else) you can turn them off with:
 And map them to something different with:
 
 ```vim
-nmap <your-map-here> <Plug>(<OperationToMap>)
+<mode>map <your-map-here> <Plug>(<OperationToMap>)
 ```
 
 For reference, the default mappings are as follows:
