@@ -10,6 +10,7 @@ functional, anything can change at any time and documentation maybe lacking.*
     * [Traversing the visual selection history](#traversing-the-visual-selection-history)
     * [Settings](#settings)
         * [Prevent automatic creation of mappings](#prevent-automatic-creation-of-mappings)
+        * [Specify the length of the visual record](#specify-the-length-of-the-visual-record)
 * [Installation](#installation)
 * [Contribution guidelines](#contribution-guidelines)
     * [Report a bug](#report-a-bug)
@@ -62,6 +63,15 @@ nmap <silent> [v <Plug>(SelectPrevious)
 nmap <silent> ]v <Plug>(SelectNext)
 nmap <silent> [V <Plug>(SelectFirst)
 nmap <silent> ]V <Plug>(SelectLast)
+```
+
+#### Specify the length of the visual record
+
+By default the 'visual-history' plugin remembers your last 100 visual
+selections. To change this default, add this to your .vimrc:
+
+```vim
+g:visual_history_record_length = <any number greater than 0>
 ```
 
 ## Installation
