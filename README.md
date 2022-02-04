@@ -6,7 +6,7 @@ A Vim plugin that keeps a traversable record of previous visual selections
 functional, anything can change at any time and documentation maybe lacking.*
 
 ## Table of contents
-* [Feature Demo](#feature-demo)
+* [Feature Demos](#feature-demos)
     * [Traversing different types of visual selection](#traversing-different-types-of-visual-selection)
     * [You can also give a count](#you-can-also-give-a count)
 * [Usage](#usage)
@@ -21,7 +21,7 @@ functional, anything can change at any time and documentation maybe lacking.*
 * [My other plugins](#my-other-plugins)
 * [License](#license)
 
-## Feature demo
+## Feature demos
 
 ### Traversing different types of visual selection
 
