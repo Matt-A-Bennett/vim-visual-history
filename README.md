@@ -5,7 +5,7 @@ A Vim plugin that keeps a traversable record of previous visual selections
 *This plugin is in an initial testing phase. While it should always be
 functional, anything can change at any time and documentation maybe lacking.*
 
-In visual mode, 4 commands are defined:
+In visual and in normal mode, 4 commands are defined:
 
 ```
 [v : Reselect previous visual selection
@@ -31,10 +31,17 @@ And map them to something different with:
 For reference, the default mappings are as follows:
 
 ```vim
+" visual mode commands
 vmap <silent> [v <Plug>(SelectPrevious)
 vmap <silent> ]v <Plug>(SelectNext)
 vmap <silent> [V <Plug>(SelectFirst)
 vmap <silent> ]V <Plug>(SelectLast)
+
+" normal mode commands
+nmap <silent> [v <Plug>(SelectPrevious)
+nmap <silent> ]v <Plug>(SelectNext)
+nmap <silent> [V <Plug>(SelectFirst)
+nmap <silent> ]V <Plug>(SelectLast)
 ```
 
 ## Installation

@@ -136,11 +136,13 @@ nnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_re
 "{{{- create maps and text objects --------------------------------------------
 if !exists("g:visual_history_create_mappings") || g:visual_history_create_mappings != 0
 
+    " visual mode commands
     vmap <silent> [v <Plug>(SelectPrevious)
     vmap <silent> ]v <Plug>(SelectNext)
     vmap <silent> [V <Plug>(SelectFirst)
     vmap <silent> ]V <Plug>(SelectLast)
 
+    " normal mode commands
     nmap <silent> [v <Plug>(SelectPrevious)
     nmap <silent> ]v <Plug>(SelectNext)
     nmap <silent> [V <Plug>(SelectFirst)
