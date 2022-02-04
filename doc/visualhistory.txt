@@ -25,10 +25,10 @@ TRAVERSING THE VISUAL SELECTION HISTORY                            *vishist1*
 In visual and in normal mode, 4 commands are defined:
 
                                         *[v*
-[v                      Reselect previous visual selection
+[count][v               Reselect [count] previous visual selections
 
                                         *]v*
-]v                      Reselect next visual selection
+[count]]v               Reselect [count] next visual selections
 
                                         *[V*
 [V                      Reselect first visual selection
