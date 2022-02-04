@@ -9,7 +9,7 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.2.1
+" Version:      0.3.0
 " License:      Same as Vim's (see :help license)
 "
 "
@@ -27,7 +27,11 @@ function! s:initalise_variables()
     if !exists("b:vis_mark_record")
         let b:vis_mark_record = []
         let b:vis_mark_record_pointer = 0
-        let b:record_length = 100
+        if ! exists("g:visual_history_record_length")
+            let b:record_length = 100
+        else
+            let b:record_length = g:visual_history_record_length
+        endif
     endif
     let b:reselecting = 0
 endfunction
@@ -63,12 +67,12 @@ function! s:update_visual_mark_list()
         let b:reselecting = 0
         return
     endif
-    let vis_mode = mode()
-    if vis_mode ==# 'v' || vis_mode ==# 'V' || vis_mode ==# "\<C-V>"
+    let mode = mode()
+    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
         if len(b:vis_mark_record) > 0 && len(b:vis_mark_record) > b:record_length
             call remove(b:vis_mark_record, 0)
         endif
-        let vis_pos = s:get_visual_position(vis_mode)
+        let vis_pos = s:get_visual_position(mode)
         call add(b:vis_mark_record, vis_pos)
         call s:update_pointer(1)
     endif
@@ -87,7 +91,7 @@ endfunction
 "}}}---------------------------------------------------------------------------
 
 "{{{- reselect_visual_from_record ---------------------------------------------
-function! s:reselect_visual_from_record(direction, type)
+function! s:reselect_visual_from_record(direction)
     let direction = a:direction
     if direction ==# 'first'
         let b:vis_mark_record_pointer = 1
@@ -118,10 +122,15 @@ autocmd BufEnter * call <SID>initalise_variables()
 "=============================== CREATE MAPS ==================================
 
 "{{{- define plug function calls ----------------------------------------------
-vnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_record(-1, visualmode())<CR>
-vnoremap <silent> <Plug>(SelectNext)     :<C-U>call <SID>reselect_visual_from_record(1, visualmode())<CR>
-vnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_record('first', visualmode())<CR>
-vnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last', visualmode())<CR>
+vnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_record(-1)<CR>
+vnoremap <silent> <Plug>(SelectNext)     :<C-U>call <SID>reselect_visual_from_record(1)<CR>
+vnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_record('first')<CR>
+vnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last')<CR>
+
+nnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_record(-1)<CR>
+nnoremap <silent> <Plug>(SelectNext)     :<C-U>call <SID>reselect_visual_from_record(1)<CR>
+nnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_record('first')<CR>
+nnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last')<CR>
 "}}}---------------------------------------------------------------------------
 
 "{{{- create maps and text objects --------------------------------------------
@@ -131,6 +140,11 @@ if !exists("g:visual_history_create_mappings") || g:visual_history_create_mappin
     vmap <silent> ]v <Plug>(SelectNext)
     vmap <silent> [V <Plug>(SelectFirst)
     vmap <silent> ]V <Plug>(SelectLast)
+
+    nmap <silent> [v <Plug>(SelectPrevious)
+    nmap <silent> ]v <Plug>(SelectNext)
+    nmap <silent> [V <Plug>(SelectFirst)
+    nmap <silent> ]V <Plug>(SelectLast)
 
 endif
 "}}}---------------------------------------------------------------------------
