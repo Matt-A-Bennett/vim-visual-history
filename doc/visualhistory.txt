@@ -1,0 +1,81 @@
+*visual-history.txt* (v0.3.1) Keep a traversable record of previous visual
+selections.
+
+License: Same terms as Vim itself (see |license|)
+
+This plugin is only available if 'compatible' is not set.
+
+
+VISUAL-HISTORY                                        *visual-history*
+
+This plugin is in an initial testing phase. While it should always be
+functional, anything can change at any time and documentation maybe lacking.
+
+
+TABLE OF CONTENTS
+
+1 Traversing the visual selection history                          |vishist1|
+2 Settings                                                         |vishist2|
+  2.1 Prevent automatic creation of mappings                       |vishist2.1|
+  2.2 Specify the length of the visual record                      |vishist2.2|
+
+
+TRAVERSING THE VISUAL SELECTION HISTORY                            *vishist1*
+
+In visual and in normal mode, 4 commands are defined:
+
+                                        *[v*
+[v                      Reselect previous visual selection
+
+                                        *]v*
+]v                      Reselect next visual selection
+
+                                        *[V*
+[V                      Reselect first visual selection
+
+                                        *]V*
+]V                      Reselect last visual selection
+
+
+Note that only visual selections where the cursor moves are remembered (so
+doing `V` to select a line won't work unless you additionally move the cursor
+at least one character to the left or right).
+
+
+SETTINGS                                                           *vishist2*
+
+PREVENT AUTOMATIC CREATION OF MAPPINGS                             *vishist2.1*
+
+                                   *g:visual_history_create_mappings*
+By default |visual-history| creates the above mappings. If you would rather it
+didn't do this (for instance if you already have those key combinations mapped
+to something else) you can turn them off with:
+
+    let g:visual_history_create_mappings = 0
+
+And map them to something different with:
+
+    <mode>map <your-map-here> <Plug>(<OperationToMap>)
+
+For reference, the default mappings are as follows:
+
+    " visual mode commands
+    vmap <silent> [v <Plug>(SelectPrevious)
+    vmap <silent> ]v <Plug>(SelectNext)
+    vmap <silent> [V <Plug>(SelectFirst)
+    vmap <silent> ]V <Plug>(SelectLast)
+
+    " normal mode commands
+    nmap <silent> [v <Plug>(SelectPrevious)
+    nmap <silent> ]v <Plug>(SelectNext)
+    nmap <silent> [V <Plug>(SelectFirst)
+    nmap <silent> ]V <Plug>(SelectLast)
+
+
+SPECIFY THE LENGTH OF THE VISUAL RECORD                            *vishist2.2*
+
+                                   *g:visual_history_record_length*
+By default |visual-history| remembers your last 100 visual selections. To
+change this default, add this to your .vimrc:
+
+    let g:visual_history_record_length = <any number greater than 0>

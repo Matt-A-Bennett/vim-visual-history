@@ -50,6 +50,12 @@ to something else) you can turn them off with:
 And map them to something different with:
 
 ```vim
+let g:visual_history_create_mappings = 0
+```
+
+And map them to something different with:
+
+```vim
 <mode>map <your-map-here> <Plug>(<OperationToMap>)
 ```
 
@@ -75,7 +81,7 @@ By default the 'visual-history' plugin remembers your last 100 visual
 selections. To change this default, add this to your .vimrc:
 
 ```vim
-g:visual_history_record_length = <any number greater than 0>
+let g:visual_history_record_length = <any number greater than 0>
 ```
 
 ## Installation
