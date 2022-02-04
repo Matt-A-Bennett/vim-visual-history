@@ -9,17 +9,17 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.3.0
+" Version:      0.3.1
 " License:      Same as Vim's (see :help license)
 "
 "
 "================================== SETUP =====================================
 
 "{{{- guard against reloading -------------------------------------------------
-if exists("g:loaded_visual_walk") || &cp || v:version < 700
+if exists("g:loaded_visual_history") || &cp || v:version < 700
     finish
 endif
-let g:loaded_visual_walk = 1
+let g:loaded_visual_history = 1
 "}}}---------------------------------------------------------------------------
 
 "{{{- initalise variables -----------------------------------------------------
