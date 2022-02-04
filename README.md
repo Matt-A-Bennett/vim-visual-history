@@ -8,7 +8,7 @@ functional, anything can change at any time and documentation maybe lacking.*
 ## Table of contents
 * [Feature Demos](#feature-demos)
     * [Traversing different types of visual selection](#traversing-different-types-of-visual-selection)
-    * [You can also give a count](#you-can-also-give-a count)
+    * [You can also give a count](#you-can-also-give-a-count)
 * [Usage](#usage)
     * [Traversing the visual selection history](#traversing-the-visual-selection-history)
     * [Settings](#settings)
