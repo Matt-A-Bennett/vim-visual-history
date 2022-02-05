@@ -1,6 +1,6 @@
 # vim-visual-history
 
-A Vim plugin that keeps a traversable record of previous visual selections
+A Vim plugin that keeps a traversable history of previous visual selections
 
 *This plugin is in an initial testing phase. While it should always be
 functional, anything can change at any time and documentation maybe lacking.*
