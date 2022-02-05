@@ -122,7 +122,6 @@ function! s:reselect_visual_from_record(direction)
     execute "normal! \<ESC>"
     call cursor(l1, c1)
     execute "normal! ".vis_mode
-    normal!.o
     call cursor(l2, c2)
 endfunction
 "}}}---------------------------------------------------------------------------
