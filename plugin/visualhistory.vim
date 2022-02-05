@@ -23,8 +23,8 @@ let g:loaded_visual_history = 1
 "}}}---------------------------------------------------------------------------
 
 "{{{- initalise variables -----------------------------------------------------
-function! s:initalise_variables()
-    if !exists("b:vis_mark_record")
+function! s:initalise_variables(reset)
+    if !exists("b:vis_mark_record") || a:reset == 1
         let b:vis_mark_record = []
         let b:vis_mark_record_pointer = -1
         if ! exists("g:visual_history_record_length")
@@ -124,8 +124,11 @@ function! s:reselect_visual_from_record(direction)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-autocmd CursorMoved * call <SID>update_visual_mark_list()
-autocmd BufEnter    * call <SID>initalise_variables()
+autocmd CursorMoved  * call <SID>update_visual_mark_list()
+autocmd BufEnter     * call <SID>initalise_variables(0)
+autocmd TextChanged  * call <SID>initalise_variables(1)
+autocmd TextChangedI * call <SID>initalise_variables(1)
+autocmd TextChangedP * call <SID>initalise_variables(1)
 
 "=============================== CREATE MAPS ==================================
 
