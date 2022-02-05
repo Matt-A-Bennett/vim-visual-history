@@ -1,4 +1,4 @@
-*visual-history.txt* (v0.4.0) Keep a traversable record of previous visual
+*visual-history.txt* (v0.5.0) Keep a traversable record of previous visual
 selections.
 
 License: Same terms as Vim itself (see |license|)
@@ -40,6 +40,10 @@ In visual and in normal mode, 4 commands are defined:
 Note that only visual selections where the cursor moves are remembered (so
 doing `V` to select a line won't work unless you additionally move the cursor
 at least one character to the left or right).
+
+Also note that if you make an edit to the text in the buffer, then the visual
+history will be cleared (as an edit could invalidate the previous visual
+selection positions).
 
 
 SETTINGS                                                           *vishist2*
