@@ -165,7 +165,6 @@ endfunction
 
 "{{{- turn_on_cursor_tracking -------------------------------------------------
 function! s:turn_on_cursor_tracking()
-    echomsg "on"
     augroup cursor_tracking
         autocmd!
         autocmd CursorMoved * call <SID>update_visual_mark_list()
@@ -175,7 +174,6 @@ endfunction
 
 "{{{- turn_off_cursor_tracking ------------------------------------------------
 function! s:turn_off_cursor_tracking()
-    echomsg "off"
     augroup cursor_tracking
         autocmd!
     augroup END
@@ -187,12 +185,11 @@ autocmd BufEnter                  * call <SID>initalise_variables(0)
 autocmd TextChanged,InsertLeave   * call <SID>sync_history()
 
 if exists("##ModeChanged")
-    autocmd ModeChanged [vV]:* call <SID>turn_off_cursor_tracking()
-    autocmd ModeChanged *:[vV] call <SID>turn_on_cursor_tracking()
+    autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
+    autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
 else
-    autocmd CursorMoved               * call <SID>update_visual_mark_list()
+    autocmd CursorMoved           * call <SID>update_visual_mark_list()
 endif
-
 "}}}---------------------------------------------------------------------------
 
 "=============================== CREATE MAPS ==================================
