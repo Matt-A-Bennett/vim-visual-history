@@ -9,7 +9,7 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.5.2
+" Version:      0.6.0
 " License:      Same as Vim's (see :help license)
 "
 "
@@ -127,13 +127,16 @@ function! s:reselect_visual_from_record(direction)
 endfunction
 "}}}---------------------------------------------------------------------------
 
+"{{{- lines_added_or_removed ---------------------------------------------------
 function! s:lines_added_or_removed()
     let b:current_number_of_lines = line('$')
     let difference = b:current_number_of_lines - b:old_number_of_lines
     let b:old_number_of_lines = b:current_number_of_lines
     return difference
 endfunction
+"}}}---------------------------------------------------------------------------
 
+"{{{- sync_history ------------------------------------------------------------
 function! s:sync_history()
     let difference = s:lines_added_or_removed() 
     let g:difference = difference
@@ -158,6 +161,7 @@ function! s:sync_history()
         endfor
     endif
 endfunction
+"}}}---------------------------------------------------------------------------
 
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initalise_variables(0)
