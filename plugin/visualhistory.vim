@@ -26,7 +26,7 @@ let g:loaded_visual_history = 1
 function! s:initalise_variables()
     if !exists("b:vis_mark_record")
         let b:vis_mark_record = []
-        let b:vis_mark_record_pointer = 0
+        let b:vis_mark_record_pointer = -1
         if ! exists("g:visual_history_record_length")
             let b:record_length = 100
         else
