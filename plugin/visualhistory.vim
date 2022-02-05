@@ -27,7 +27,7 @@ function! s:initalise_variables(reset)
     if !exists("b:vis_mark_record") || a:reset == 1
         let b:vis_mark_record = []
         let b:vis_mark_record_pointer = -1
-        let b:current_number_of_lines = line('$')
+        let b:old_number_of_lines = line('$')
         if ! exists("g:visual_history_record_length")
             let b:record_length = 100
         else
@@ -135,33 +135,34 @@ function! s:lines_added_or_removed()
 endfunction
 
 function! s:sync_history()
-
     let difference = s:lines_added_or_removed() 
-
+    let g:difference = difference
     if difference == 0
         return
     else
-        " line where end of change occurred
-        let [_, l2, _, _] = getpos("']")
+        let [_, first_changed_line, _, _] = getpos("'[")
+        let [_, last_changed_line, _, _] = getpos("']")
+        let record_count = 0
+        for record in b:vis_mark_record
+            let overlap = record[0][0] - first_changed_line + 1
+            if overlap > 0 && overlap <= -difference
+                let b:vis_mark_record[record_count][0][0] = last_changed_line
+                let b:vis_mark_record[record_count][1][0] += difference
+            elseif record[0][0] >= first_changed_line
+                let b:vis_mark_record[record_count][0][0] += difference
+                let b:vis_mark_record[record_count][1][0] += difference
+            elseif record[1][0] >= first_changed_line
+                let b:vis_mark_record[record_count][1][0] += difference
+            endif
+            let record_count += 1
+        endfor
     endif
-
-    if difference > 0 " if text was added, any history where lines > l2 should be incremented
-
-    elseif difference < 0 " if text was subtracted, any history where lines > l2 should be decremented
-
-    endif
-
 endfunction
 
 "{{{- set up autocmds ---------------------------------------------------------
-autocmd CursorMoved  * call <SID>update_visual_mark_list()
-autocmd BufEnter     * call <SID>initalise_variables(0)
-" autocmd TextChanged  * call <SID>initalise_variables(1)
-" autocmd TextChangedI * call <SID>initalise_variables(1)
-" autocmd TextChangedP * call <SID>initalise_variables(1)
-autocmd TextChanged  * call <SID>sync_history()
-autocmd TextChangedI * call <SID>sync_history()
-autocmd TextChangedP * call <SID>sync_history()
+autocmd BufEnter                  * call <SID>initalise_variables(0)
+autocmd CursorMoved               * call <SID>update_visual_mark_list()
+autocmd TextChanged,InsertLeave   * call <SID>sync_history()
 "}}}---------------------------------------------------------------------------
 
 "=============================== CREATE MAPS ==================================
