@@ -69,12 +69,15 @@ function! s:update_visual_mark_list()
     endif
     let mode = mode()
     if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
-        if len(b:vis_mark_record) > 0 && len(b:vis_mark_record) > b:record_length
-            call remove(b:vis_mark_record, 0)
-        endif
         let vis_pos = s:get_visual_position(mode)
-        call add(b:vis_mark_record, vis_pos)
-        call s:update_pointer(1)
+        " if there history is empty, or that last entry is different
+        if len(b:vis_mark_record) == 0 || b:vis_mark_record[-1] != vis_pos
+            call add(b:vis_mark_record, vis_pos)
+            call s:update_pointer(1)
+            if len(b:vis_mark_record) > b:record_length
+                call remove(b:vis_mark_record, 0)
+            endif
+        endif
     endif
 endfunction
 "}}}---------------------------------------------------------------------------
