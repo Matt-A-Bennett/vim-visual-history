@@ -221,10 +221,6 @@ nnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_re
 nnoremap <silent> <Plug>(SelectNext)     :<C-U>call <SID>reselect_visual_from_record(1)<CR>
 nnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_record('first')<CR>
 nnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last')<CR>
-
-if !exists(":ClearVisualHistory")
-    command ClearVisualHistory              :call s:initialise_variables(1)
-endif
 "}}}---------------------------------------------------------------------------
 
 "{{{- create maps and text objects --------------------------------------------
@@ -242,6 +238,9 @@ if !exists("g:visual_history_create_mappings") || g:visual_history_create_mappin
     nmap <silent> [V <Plug>(SelectFirst)
     nmap <silent> ]V <Plug>(SelectLast)
 
+    if !exists(":ClearVisualHistory")
+        command ClearVisualHistory :call s:initialise_variables(1)
+    endif
 endif
 "}}}---------------------------------------------------------------------------
 
