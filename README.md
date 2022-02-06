@@ -44,6 +44,12 @@ In visual and in normal mode, 4 commands are defined:
        ]V : Reselect last visual selection
 ```
 
+And the following Ex command:
+
+```
+:ClearVisualHistory : Remove all visual history for the local buffer
+```
+
 Note that only visual selections where the cursor moves are remembered (so
 doing `V` to select a line won't work unless you additionally move the cursor
 at least one character to the left or right).
