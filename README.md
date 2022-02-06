@@ -88,7 +88,7 @@ By default the 'visual-history' plugin remembers your last 100 visual
 selections. To change this default, add this to your .vimrc:
 
 ```vim
-let g:visual_history_history_length = <any number greater than 0>
+let g:visual_history_length = <any number greater than 0>
 ```
 
 ## Installation
