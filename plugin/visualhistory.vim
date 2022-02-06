@@ -100,6 +100,26 @@ function! s:update_visual_mark_list()
 endfunction
 "}}}---------------------------------------------------------------------------
 
+"{{{- extract_record_entry ----------------------------------------------------
+function! s:extract_record_entry()
+    let l1 = b:vis_mark_record[b:vis_mark_record_pointer][0][0]
+    let c1 = b:vis_mark_record[b:vis_mark_record_pointer][0][1]
+    let l2 = b:vis_mark_record[b:vis_mark_record_pointer][1][0]
+    let c2 = b:vis_mark_record[b:vis_mark_record_pointer][1][1]
+    let vis_mode = b:vis_mark_record[b:vis_mark_record_pointer][2]
+    return [l1, c1, l2, c2, vis_mode]
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- remove_record_entry -----------------------------------------------------------
+function! s:remove_record_entry(entry_number)
+    call remove(b:vis_mark_record, a:entry_number)
+    if b:vis_mark_record_pointer >= a:entry_number
+        let b:vis_mark_record_pointer -= 1
+    endif
+endfunction
+"}}}---------------------------------------------------------------------------
+
 "{{{- lines_added_or_removed ---------------------------------------------------
 function! s:lines_added_or_removed()
     let b:current_number_of_lines = line('$')
@@ -109,19 +129,27 @@ function! s:lines_added_or_removed()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- sync_history ------------------------------------------------------------
-function! s:sync_history()
+"{{{- sync_record -------------------------------------------------------------
+function! s:sync_record()
     let difference = s:lines_added_or_removed() 
     let g:difference = difference
     if difference == 0
         return
     else
+
         let [_, first_changed_line, _, _] = getpos("'[")
         let [_, last_changed_line, _, _] = getpos("']")
+
         let record_count = 0
         for record in b:vis_mark_record
-            let overlap = record[0][0] - first_changed_line + 1
-            if overlap > 0 && overlap <= -difference
+            let overlap1 = record[0][0] - first_changed_line + 1
+            let overlap2 = record[1][0] - first_changed_line + 1
+            if (overlap1 > 0 && overlap1 <= -difference) &&
+             \ (overlap2 > 0 && overlap2 <= -difference)
+                call s:remove_record_entry(record_count)
+                let record_count -= 1
+
+            elseif overlap1 > 0 && overlap1 <= -difference
                 let b:vis_mark_record[record_count][0][0] = last_changed_line
                 let b:vis_mark_record[record_count][1][0] += difference
             elseif record[0][0] >= first_changed_line
@@ -133,17 +161,6 @@ function! s:sync_history()
             let record_count += 1
         endfor
     endif
-endfunction
-"}}}---------------------------------------------------------------------------
-
-"{{{- get_record --------------------------------------------------------------
-function! s:get_record()
-    let l1 = b:vis_mark_record[b:vis_mark_record_pointer][0][0]
-    let c1 = b:vis_mark_record[b:vis_mark_record_pointer][0][1]
-    let l2 = b:vis_mark_record[b:vis_mark_record_pointer][1][0]
-    let c2 = b:vis_mark_record[b:vis_mark_record_pointer][1][1]
-    let vis_mode = b:vis_mark_record[b:vis_mark_record_pointer][2]
-    return [l1, c1, l2, c2, vis_mode]
 endfunction
 "}}}---------------------------------------------------------------------------
 
@@ -172,7 +189,7 @@ function! s:reselect_visual_from_record(direction)
     endif
     let b:reselecting = 1
     call s:update_pointer(direction)
-    let [l1, c1, l2, c2, vis_mode] = s:get_record()
+    let [l1, c1, l2, c2, vis_mode] = s:extract_record_entry()
     execute "normal! \<ESC>"
     call cursor(l1, c1)
     execute "normal! ".vis_mode
