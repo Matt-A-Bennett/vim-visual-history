@@ -38,7 +38,24 @@ function! s:initalise_variables(reset)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"==============================================================================
+"================================ FUNCTIONS ===================================
+
+"{{{- turn_on_cursor_tracking -------------------------------------------------
+function! s:turn_on_cursor_tracking()
+    augroup cursor_tracking
+        autocmd!
+        autocmd CursorMoved * call <SID>update_visual_mark_list()
+    augroup END
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- turn_off_cursor_tracking ------------------------------------------------
+function! s:turn_off_cursor_tracking()
+    augroup cursor_tracking
+        autocmd!
+    augroup END
+endfunction
+"}}}---------------------------------------------------------------------------
 
 "{{{- update_pointer ----------------------------------------------------------
 function! s:update_pointer(direction)
@@ -79,6 +96,42 @@ function! s:update_visual_mark_list()
                 call remove(b:vis_mark_record, 0)
             endif
         endif
+    endif
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- lines_added_or_removed ---------------------------------------------------
+function! s:lines_added_or_removed()
+    let b:current_number_of_lines = line('$')
+    let difference = b:current_number_of_lines - b:old_number_of_lines
+    let b:old_number_of_lines = b:current_number_of_lines
+    return difference
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- sync_history ------------------------------------------------------------
+function! s:sync_history()
+    let difference = s:lines_added_or_removed() 
+    let g:difference = difference
+    if difference == 0
+        return
+    else
+        let [_, first_changed_line, _, _] = getpos("'[")
+        let [_, last_changed_line, _, _] = getpos("']")
+        let record_count = 0
+        for record in b:vis_mark_record
+            let overlap = record[0][0] - first_changed_line + 1
+            if overlap > 0 && overlap <= -difference
+                let b:vis_mark_record[record_count][0][0] = last_changed_line
+                let b:vis_mark_record[record_count][1][0] += difference
+            elseif record[0][0] >= first_changed_line
+                let b:vis_mark_record[record_count][0][0] += difference
+                let b:vis_mark_record[record_count][1][0] += difference
+            elseif record[1][0] >= first_changed_line
+                let b:vis_mark_record[record_count][1][0] += difference
+            endif
+            let record_count += 1
+        endfor
     endif
 endfunction
 "}}}---------------------------------------------------------------------------
@@ -127,58 +180,7 @@ function! s:reselect_visual_from_record(direction)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- lines_added_or_removed ---------------------------------------------------
-function! s:lines_added_or_removed()
-    let b:current_number_of_lines = line('$')
-    let difference = b:current_number_of_lines - b:old_number_of_lines
-    let b:old_number_of_lines = b:current_number_of_lines
-    return difference
-endfunction
-"}}}---------------------------------------------------------------------------
-
-"{{{- sync_history ------------------------------------------------------------
-function! s:sync_history()
-    let difference = s:lines_added_or_removed() 
-    let g:difference = difference
-    if difference == 0
-        return
-    else
-        let [_, first_changed_line, _, _] = getpos("'[")
-        let [_, last_changed_line, _, _] = getpos("']")
-        let record_count = 0
-        for record in b:vis_mark_record
-            let overlap = record[0][0] - first_changed_line + 1
-            if overlap > 0 && overlap <= -difference
-                let b:vis_mark_record[record_count][0][0] = last_changed_line
-                let b:vis_mark_record[record_count][1][0] += difference
-            elseif record[0][0] >= first_changed_line
-                let b:vis_mark_record[record_count][0][0] += difference
-                let b:vis_mark_record[record_count][1][0] += difference
-            elseif record[1][0] >= first_changed_line
-                let b:vis_mark_record[record_count][1][0] += difference
-            endif
-            let record_count += 1
-        endfor
-    endif
-endfunction
-"}}}---------------------------------------------------------------------------
-
-"{{{- turn_on_cursor_tracking -------------------------------------------------
-function! s:turn_on_cursor_tracking()
-    augroup cursor_tracking
-        autocmd!
-        autocmd CursorMoved * call <SID>update_visual_mark_list()
-    augroup END
-endfunction
-"}}}---------------------------------------------------------------------------
-
-"{{{- turn_off_cursor_tracking ------------------------------------------------
-function! s:turn_off_cursor_tracking()
-    augroup cursor_tracking
-        autocmd!
-    augroup END
-endfunction
-"}}}---------------------------------------------------------------------------
+"======================== CREATE MAPS AND AUTOCMDS ============================
 
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initalise_variables(0)
@@ -191,8 +193,6 @@ else
     autocmd CursorMoved           * call <SID>update_visual_mark_list()
 endif
 "}}}---------------------------------------------------------------------------
-
-"=============================== CREATE MAPS ==================================
 
 "{{{- define plug function calls ----------------------------------------------
 vnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_record(-1)<CR>
