@@ -79,23 +79,24 @@ function! s:get_visual_position(vis_mode)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- update_visual_mark_list -------------------------------------------------
-function! s:update_visual_mark_list()
-    if b:reselecting == 1
-        let b:reselecting = 0
-        return
-    endif
-    let mode = mode()
-    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
-        let vis_pos = s:get_visual_position(mode)
-        " if there history is empty, or that last entry is different
-        if len(b:vis_mark_record) == 0 || b:vis_mark_record[-1] != vis_pos
-            call add(b:vis_mark_record, vis_pos)
-            call s:update_pointer(1)
-            if len(b:vis_mark_record) > b:record_length
-                call remove(b:vis_mark_record, 0)
-            endif
+"{{{- add_record_entry --------------------------------------------------------
+function! s:add_record_entry(vis_pos)
+    " if the history is empty, or the last entry is different
+    if len(b:vis_mark_record) == 0 || b:vis_mark_record[-1] != a:vis_pos
+        call add(b:vis_mark_record, a:vis_pos)
+        call s:update_pointer(1)
+        if len(b:vis_mark_record) > b:record_length
+            call remove(b:vis_mark_record, 0)
         endif
+    endif
+endfunction
+"}}}---------------------------------------------------------------------------
+
+"{{{- remove_record_entry -----------------------------------------------------------
+function! s:remove_record_entry(entry_number)
+    call remove(b:vis_mark_record, a:entry_number)
+    if b:vis_mark_record_pointer >= a:entry_number
+        let b:vis_mark_record_pointer -= 1
     endif
 endfunction
 "}}}---------------------------------------------------------------------------
@@ -111,11 +112,17 @@ function! s:extract_record_entry()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- remove_record_entry -----------------------------------------------------------
-function! s:remove_record_entry(entry_number)
-    call remove(b:vis_mark_record, a:entry_number)
-    if b:vis_mark_record_pointer >= a:entry_number
-        let b:vis_mark_record_pointer -= 1
+"{{{- update_visual_mark_list -------------------------------------------------
+function! s:update_visual_mark_list()
+    if b:reselecting == 1
+        let b:reselecting = 0
+        return
+    endif
+    let mode = mode()
+    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
+        let vis_pos = s:get_visual_position(mode)
+        " if there history is empty, or that last entry is different
+        call s:add_record_entry(vis_pos)
     endif
 endfunction
 "}}}---------------------------------------------------------------------------
