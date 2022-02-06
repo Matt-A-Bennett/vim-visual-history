@@ -13,7 +13,7 @@ functional, anything can change at any time and documentation maybe lacking.*
     * [Traversing the visual selection history](#traversing-the-visual-selection-history)
     * [Settings](#settings)
         * [Prevent automatic creation of mappings](#prevent-automatic-creation-of-mappings)
-        * [Specify the length of the visual record](#specify-the-length-of-the-visual-record)
+        * [Specify the length of the visual history](#specify-the-length-of-the-visual-history)
 * [Installation](#installation)
 * [Contribution guidelines](#contribution-guidelines)
     * [Report a bug](#report-a-bug)
@@ -82,13 +82,13 @@ nmap <silent> [V <Plug>(SelectFirst)
 nmap <silent> ]V <Plug>(SelectLast)
 ```
 
-#### Specify the length of the visual record
+#### Specify the length of the visual history
 
 By default the 'visual-history' plugin remembers your last 100 visual
 selections. To change this default, add this to your .vimrc:
 
 ```vim
-let g:visual_history_record_length = <any number greater than 0>
+let g:visual_history_history_length = <any number greater than 0>
 ```
 
 ## Installation
@@ -149,7 +149,7 @@ request, then do so (please let me know this is your plan first in a [new issue]
  - [vim-surround-funk](https://github.com/Matt-A-Bennett/vim-surround-funk):  A
    Vim plugin to manipulate function calls 
  - [vim-visual-history](https://github.com/Matt-A-Bennett/vim-visual-history):
-   A Vim plugin that keeps a traversable record of previous visual selections
+   A Vim plugin that keeps a traversable history of previous visual selections
                        
 ## License
  Copyright (c) Matthew Bennett. Distributed under the same terms as Vim itself.

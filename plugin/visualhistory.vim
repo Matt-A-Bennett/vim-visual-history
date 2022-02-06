@@ -9,7 +9,7 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.6.1
+" Version:      0.6.2
 " License:      Same as Vim's (see :help license)
 "
 "
@@ -28,10 +28,10 @@ function! s:initalise_variables(reset)
         let b:vis_mark_record = []
         let b:vis_mark_record_pointer = -1
         let b:old_number_of_lines = line('$')
-        if ! exists("g:visual_history_record_length")
+        if ! exists("g:visual_history_length")
             let b:record_length = 100
         else
-            let b:record_length = g:visual_history_record_length
+            let b:record_length = g:visual_history_length
         endif
     endif
     let b:reselecting = 0

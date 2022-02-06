@@ -1,4 +1,4 @@
-*visual-history.txt* (v0.6.1) Keep a traversable record of previous visual
+*visual-history.txt* (v0.6.2) Keep a traversable history of previous visual
 selections.
 
 License: Same terms as Vim itself (see |license|)
@@ -17,7 +17,7 @@ TABLE OF CONTENTS
 1 Traversing the visual selection history                          |vishist1|
 2 Settings                                                         |vishist2|
   2.1 Prevent automatic creation of mappings                       |vishist2.1|
-  2.2 Specify the length of the visual record                      |vishist2.2|
+  2.2 Specify the length of the visual history                     |vishist2.2|
 
 
 TRAVERSING THE VISUAL SELECTION HISTORY                            *vishist1*
@@ -72,10 +72,10 @@ For reference, the default mappings are as follows:
     nmap <silent> ]V <Plug>(SelectLast)
 
 
-SPECIFY THE LENGTH OF THE VISUAL RECORD                            *vishist2.2*
+SPECIFY THE LENGTH OF THE VISUAL HISTORY                           *vishist2.2*
 
-                                   *g:visual_history_record_length*
+                                   *g:visual_history_length*
 By default |visual-history| remembers your last 100 visual selections. To
 change this default, add this to your .vimrc:
 
-    let g:visual_history_record_length = <any number greater than 0>
+    let g:visual_history_length = <any number greater than 0>
