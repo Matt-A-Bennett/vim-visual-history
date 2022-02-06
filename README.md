@@ -56,8 +56,6 @@ By default visual-history creates the above mappings. If you would rather it
 didn't do this (for instance if you already have those key combinations mapped
 to something else) you can turn them off with:
 
-And map them to something different with:
-
 ```vim
 let g:visual_history_create_mappings = 0
 ```
