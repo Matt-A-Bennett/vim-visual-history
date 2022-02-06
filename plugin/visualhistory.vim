@@ -22,8 +22,8 @@ endif
 let g:loaded_visual_history = 1
 "}}}---------------------------------------------------------------------------
 
-"{{{- initalise variables -----------------------------------------------------
-function! s:initalise_variables(reset)
+"{{{- initialise variables -----------------------------------------------------
+function! s:initialise_variables(reset)
     if !exists("b:vis_mark_record") || a:reset == 1
         let b:vis_mark_record = []
         let b:vis_mark_record_pointer = -1
@@ -183,8 +183,8 @@ endfunction
 "======================== CREATE MAPS AND AUTOCMDS ============================
 
 "{{{- set up autocmds ---------------------------------------------------------
-autocmd BufEnter                  * call <SID>initalise_variables(0)
-autocmd TextChanged,InsertLeave   * call <SID>sync_history()
+autocmd BufEnter                  * call <SID>initialise_variables(0)
+autocmd TextChanged,InsertLeave   * call <SID>sync_record()
 
 if exists("##ModeChanged")
     autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
@@ -206,7 +206,7 @@ nnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_re
 nnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last')<CR>
 
 if !exists(":ClearVisualHistory")
-    command ClearVisualHistory              :call s:initalise_variables(1)
+    command ClearVisualHistory              :call s:initialise_variables(1)
 endif
 "}}}---------------------------------------------------------------------------
 
