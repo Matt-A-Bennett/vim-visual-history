@@ -136,10 +136,8 @@ function! s:sync_record()
     if difference == 0
         return
     else
-
         let [_, first_changed_line, _, _] = getpos("'[")
         let [_, last_changed_line, _, _] = getpos("']")
-
         let record_count = 0
         for record in b:vis_mark_record
             let overlap1 = record[0][0] - first_changed_line + 1
@@ -148,7 +146,6 @@ function! s:sync_record()
              \ (overlap2 > 0 && overlap2 <= -difference)
                 call s:remove_record_entry(record_count)
                 let record_count -= 1
-
             elseif overlap1 > 0 && overlap1 <= -difference
                 let b:vis_mark_record[record_count][0][0] = last_changed_line
                 let b:vis_mark_record[record_count][1][0] += difference
