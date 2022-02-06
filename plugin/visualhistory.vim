@@ -204,6 +204,10 @@ nnoremap <silent> <Plug>(SelectPrevious) :<C-U>call <SID>reselect_visual_from_re
 nnoremap <silent> <Plug>(SelectNext)     :<C-U>call <SID>reselect_visual_from_record(1)<CR>
 nnoremap <silent> <Plug>(SelectFirst)    :<C-U>call <SID>reselect_visual_from_record('first')<CR>
 nnoremap <silent> <Plug>(SelectLast)     :<C-U>call <SID>reselect_visual_from_record('last')<CR>
+
+if !exists(":ClearVisualHistory")
+    command ClearVisualHistory              :call s:initalise_variables(1)
+endif
 "}}}---------------------------------------------------------------------------
 
 "{{{- create maps and text objects --------------------------------------------
