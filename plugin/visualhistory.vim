@@ -205,54 +205,32 @@ endfunction
 
 "======================== CREATE MAPS AND AUTOCMDS ============================
 
+function! s:get_visual_position2()
+    let [l, c] = [line('.'), col('.')]
+    let [_, l1, c1, _] = getpos("'<")
+    let [_, l2, c2, _] = getpos("'>")
+    call cursor(l, c)
+    if c1 == 0
+        let c1 = 1
+    endif
+    if c2 > 1000
+        let c2 = len(getline(l2))
+    endif
+    return [[l1, c1], [l2, c2], visualmode()]
+endfunction
+
 function! s:dumb()
     if b:reselecting == 1
         let b:reselecting = 0
         return
     endif
-    let [l, c] = [line('.'), col('.')]
-    let [_, l1, c1, _] = getpos("'<")
-    let [_, l2, c2, _] = getpos("'>")
-    call cursor(l1, c1)
-    if c1 == 0
-        let c1 = 1
-    endif
-    call cursor(l2, c2)
-    if c2 > 1000
-        let c2 = col("$")
-    endif
-    call cursor(l, c)
-    let vis_pos = [[l1, c1], [l2, c2], visualmode()]
+    let vis_pos = s:get_visual_position2()
     call s:add_record_entry(vis_pos)
-endfunction
-
-function! s:update_cursor_pos()
-    let b:prev_cursor_pos = [line('.'), col('.')]
-endfunction
-
-function! s:check_motion()
-    if exists("b:prev_cursor_pos")
-        echomsg 'before vs now'
-        echomsg [[line('.'), col('.')], b:prev_cursor_pos]
-    endif
-    if b:prev_cursor_pos[0] == line('.') && b:prev_cursor_pos[1] == col('.')
-        echomsg 'cusor did not move'
-        echomsg [line('.'), col('.')]
-        if exists("b:pointer_for_prev_selection")
-            echomsg 'insterting now'
-            echomsg b:vis_pos
-            call insert(b:vis_mark_record, b:vis_pos, b:pointer_for_prev_selection) 
-        endif
-        let b:vis_pos = [getpos("'<")[1:2], getpos("'>")[1:2], visualmode()]
-        let b:pointer_for_prev_selection = len(b:vis_mark_record)
-    endif
-    call s:update_cursor_pos()
 endfunction
 
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initialise_variables(0)
-" autocmd TextChanged,InsertLeave   * call <SID>sync_record()
-
+autocmd TextChanged,InsertLeave   * call <SID>sync_record()
 
 autocmd CursorMoved    * call <SID>dumb()
 
