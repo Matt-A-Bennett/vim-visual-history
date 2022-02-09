@@ -41,24 +41,24 @@ endfunction
 
 "================================ FUNCTIONS ===================================
 
-"{{{- turn_on_cursor_tracking -------------------------------------------------
-function! s:turn_on_cursor_tracking()
-    " call s:update_cursor_pos()
-    augroup cursor_tracking
-        autocmd!
-        autocmd CursorMoved * call <SID>update_visual_mark_list()
-    augroup END
-endfunction
-"}}}---------------------------------------------------------------------------
+""{{{- turn_on_cursor_tracking -------------------------------------------------
+"function! s:turn_on_cursor_tracking()
+"    " call s:update_cursor_pos()
+"    augroup cursor_tracking
+"        autocmd!
+"        autocmd CursorMoved * call <SID>update_visual_mark_list()
+"    augroup END
+"endfunction
+""}}}---------------------------------------------------------------------------
 
-"{{{- turn_off_cursor_tracking ------------------------------------------------
-function! s:turn_off_cursor_tracking()
-    " call s:check_motion()
-    augroup cursor_tracking
-        autocmd!
-    augroup END
-endfunction
-"}}}---------------------------------------------------------------------------
+""{{{- turn_off_cursor_tracking ------------------------------------------------
+"function! s:turn_off_cursor_tracking()
+"    " call s:check_motion()
+"    augroup cursor_tracking
+"        autocmd!
+"    augroup END
+"endfunction
+""}}}---------------------------------------------------------------------------
 
 "{{{- update_pointer ----------------------------------------------------------
 function! s:update_pointer(direction)
@@ -66,21 +66,21 @@ function! s:update_pointer(direction)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- get_visual_position -----------------------------------------------------
-function! s:get_visual_position(vis_mode)
-    execute "normal! \<ESC>"
-    let [_, l1, c1, _] = getpos("'<")
-    let [_, l2, c2, _] = getpos("'>")
-    normal! gv
-    if c1 == 0
-        let c1 = 1
-    endif
-    if c2 > 1000
-        let c2 = col("$")
-    endif
-    return [[l1, c1], [l2, c2], a:vis_mode]
-endfunction
-"}}}---------------------------------------------------------------------------
+""{{{- get_visual_position -----------------------------------------------------
+"function! s:get_visual_position(vis_mode)
+"    execute "normal! \<ESC>"
+"    let [_, l1, c1, _] = getpos("'<")
+"    let [_, l2, c2, _] = getpos("'>")
+"    normal! gv
+"    if c1 == 0
+"        let c1 = 1
+"    endif
+"    if c2 > 1000
+"        let c2 = col("$")
+"    endif
+"    return [[l1, c1], [l2, c2], a:vis_mode]
+"endfunction
+""}}}---------------------------------------------------------------------------
 
 "{{{- add_record_entry --------------------------------------------------------
 function! s:add_record_entry(vis_pos)
@@ -115,19 +115,19 @@ function! s:extract_record_entry()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- update_visual_mark_list -------------------------------------------------
-function! s:update_visual_mark_list()
-    if b:reselecting == 1
-        let b:reselecting = 0
-        return
-    endif
-    let mode = mode()
-    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
-        let vis_pos = s:get_visual_position(mode)
-        call s:add_record_entry(vis_pos)
-    endif
-endfunction
-"}}}---------------------------------------------------------------------------
+""{{{- update_visual_mark_list -------------------------------------------------
+"function! s:update_visual_mark_list()
+"    if b:reselecting == 1
+"        let b:reselecting = 0
+"        return
+"    endif
+"    let mode = mode()
+"    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
+"        let vis_pos = s:get_visual_position(mode)
+"        call s:add_record_entry(vis_pos)
+"    endif
+"endfunction
+""}}}---------------------------------------------------------------------------
 
 "{{{- lines_added_or_removed ---------------------------------------------------
 function! s:lines_added_or_removed()
@@ -206,10 +206,8 @@ endfunction
 "======================== CREATE MAPS AND AUTOCMDS ============================
 
 function! s:get_visual_position2()
-    let [l, c] = [line('.'), col('.')]
     let [_, l1, c1, _] = getpos("'<")
     let [_, l2, c2, _] = getpos("'>")
-    call cursor(l, c)
     if c1 == 0
         let c1 = 1
     endif
@@ -234,12 +232,12 @@ autocmd TextChanged,InsertLeave   * call <SID>sync_record()
 
 autocmd CursorMoved    * call <SID>dumb()
 
-if exists("##ModeChanged")
-    " autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
-    " autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
-else
-    " autocmd CursorMoved           * call <SID>update_visual_mark_list()
-endif
+" if exists("##ModeChanged")
+"     autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
+"     autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
+" else
+"     autocmd CursorMoved           * call <SID>update_visual_mark_list()
+" endif
 "}}}---------------------------------------------------------------------------
 
 "{{{- define plug function calls ----------------------------------------------
