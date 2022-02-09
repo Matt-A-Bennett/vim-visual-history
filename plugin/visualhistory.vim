@@ -26,7 +26,7 @@ let g:loaded_visual_history = 1
 function! s:initialise_variables(reset)
     if !exists("b:vis_mark_record") || a:reset == 1
         let b:vis_mark_record = []
-        let b:vis_mark_record_pointer = -1
+        let b:vis_mark_record_pointer = 0
         let b:old_number_of_lines = line('$')
         if ! exists("g:visual_history_length")
             let b:record_length = 100
@@ -35,6 +35,7 @@ function! s:initialise_variables(reset)
         endif
     endif
     let b:reselecting = 0
+    let b:prev_cursor_pos = getpos('.')
 endfunction
 "}}}---------------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ endfunction
 
 "{{{- turn_on_cursor_tracking -------------------------------------------------
 function! s:turn_on_cursor_tracking()
+    " call s:update_cursor_pos()
     augroup cursor_tracking
         autocmd!
         autocmd CursorMoved * call <SID>update_visual_mark_list()
@@ -51,6 +53,7 @@ endfunction
 
 "{{{- turn_off_cursor_tracking ------------------------------------------------
 function! s:turn_off_cursor_tracking()
+    " call s:check_motion()
     augroup cursor_tracking
         autocmd!
     augroup END
@@ -172,10 +175,10 @@ function! s:process_direction(direction)
     if type(a:direction) == type(0)
         let direction = a:direction*v:count1
     elseif a:direction ==# 'first'
-        let b:vis_mark_record_pointer = 1
+        let b:vis_mark_record_pointer = 2
         let direction = -1
     elseif a:direction ==# 'last'
-        let b:vis_mark_record_pointer = len(b:vis_mark_record)-2
+        let b:vis_mark_record_pointer = len(b:vis_mark_record)-1
         let direction = 1
     endif
     return direction
@@ -185,8 +188,8 @@ endfunction
 "{{{- reselect_visual_from_record ---------------------------------------------
 function! s:reselect_visual_from_record(direction)
     let direction = s:process_direction(a:direction)
-    if b:vis_mark_record_pointer+1 >= len(b:vis_mark_record) && direction == 1 ||
-     \ b:vis_mark_record_pointer   <= 0                      && direction == -1
+    if b:vis_mark_record_pointer+2 >= len(b:vis_mark_record) && direction == 1 ||
+     \ b:vis_mark_record_pointer   <= 1                      && direction == -1
         normal! gv
         return
     endif
@@ -202,15 +205,62 @@ endfunction
 
 "======================== CREATE MAPS AND AUTOCMDS ============================
 
+function! s:dumb()
+    if b:reselecting == 1
+        let b:reselecting = 0
+        return
+    endif
+    let [l, c] = [line('.'), col('.')]
+    let [_, l1, c1, _] = getpos("'<")
+    let [_, l2, c2, _] = getpos("'>")
+    call cursor(l1, c1)
+    if c1 == 0
+        let c1 = 1
+    endif
+    call cursor(l2, c2)
+    if c2 > 1000
+        let c2 = col("$")
+    endif
+    call cursor(l, c)
+    let vis_pos = [[l1, c1], [l2, c2], visualmode()]
+    call s:add_record_entry(vis_pos)
+endfunction
+
+function! s:update_cursor_pos()
+    let b:prev_cursor_pos = [line('.'), col('.')]
+endfunction
+
+function! s:check_motion()
+    if exists("b:prev_cursor_pos")
+        echomsg 'before vs now'
+        echomsg [[line('.'), col('.')], b:prev_cursor_pos]
+    endif
+    if b:prev_cursor_pos[0] == line('.') && b:prev_cursor_pos[1] == col('.')
+        echomsg 'cusor did not move'
+        echomsg [line('.'), col('.')]
+        if exists("b:pointer_for_prev_selection")
+            echomsg 'insterting now'
+            echomsg b:vis_pos
+            call insert(b:vis_mark_record, b:vis_pos, b:pointer_for_prev_selection) 
+        endif
+        let b:vis_pos = [getpos("'<")[1:2], getpos("'>")[1:2], visualmode()]
+        let b:pointer_for_prev_selection = len(b:vis_mark_record)
+    endif
+    call s:update_cursor_pos()
+endfunction
+
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initialise_variables(0)
-autocmd TextChanged,InsertLeave   * call <SID>sync_record()
+" autocmd TextChanged,InsertLeave   * call <SID>sync_record()
+
+
+autocmd CursorMoved    * call <SID>dumb()
 
 if exists("##ModeChanged")
-    autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
-    autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
+    " autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
+    " autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
 else
-    autocmd CursorMoved           * call <SID>update_visual_mark_list()
+    " autocmd CursorMoved           * call <SID>update_visual_mark_list()
 endif
 "}}}---------------------------------------------------------------------------
 
