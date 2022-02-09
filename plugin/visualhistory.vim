@@ -121,7 +121,6 @@ function! s:update_visual_mark_list()
     let mode = mode()
     if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
         let vis_pos = s:get_visual_position(mode)
-        " if there history is empty, or that last entry is different
         call s:add_record_entry(vis_pos)
     endif
 endfunction
