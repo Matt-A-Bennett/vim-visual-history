@@ -62,25 +62,37 @@ endfunction
 
 "{{{- update_pointer ----------------------------------------------------------
 function! s:update_pointer(direction)
-    let b:vis_mark_record_pointer += a:direction
+    let direction = a:direction
+    if direction ==# 'first'
+        let b:vis_mark_record_pointer = 1
+    elseif direction ==# 'last'
+        let b:vis_mark_record_pointer = len(b:vis_mark_record)-1
+    else
+        let direction = direction*v:count1
+        if b:vis_mark_record_pointer+direction <= 1
+            let b:vis_mark_record_pointer = 1
+        elseif b:vis_mark_record_pointer+direction >= len(b:vis_mark_record)
+            let b:vis_mark_record_pointer = len(b:vis_mark_record)-1
+        else
+            let b:vis_mark_record_pointer += direction
+        endif
+    endif
 endfunction
 "}}}---------------------------------------------------------------------------
 
-""{{{- get_visual_position -----------------------------------------------------
-"function! s:get_visual_position(vis_mode)
-"    execute "normal! \<ESC>"
-"    let [_, l1, c1, _] = getpos("'<")
-"    let [_, l2, c2, _] = getpos("'>")
-"    normal! gv
-"    if c1 == 0
-"        let c1 = 1
-"    endif
-"    if c2 > 1000
-"        let c2 = col("$")
-"    endif
-"    return [[l1, c1], [l2, c2], a:vis_mode]
-"endfunction
-""}}}---------------------------------------------------------------------------
+"{{{- get_visual_position -----------------------------------------------------
+function! s:get_visual_position()
+    let [_, l1, c1, _] = getpos("'<")
+    let [_, l2, c2, _] = getpos("'>")
+    if c1 == 0
+        let c1 = 1
+    endif
+    if c2 > 1000
+        let c2 = len(getline(l2))
+    endif
+    return [[l1, c1], [l2, c2], visualmode()]
+endfunction
+"}}}---------------------------------------------------------------------------
 
 "{{{- add_record_entry --------------------------------------------------------
 function! s:add_record_entry(vis_pos)
@@ -115,19 +127,16 @@ function! s:extract_record_entry()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-""{{{- update_visual_mark_list -------------------------------------------------
-"function! s:update_visual_mark_list()
-"    if b:reselecting == 1
-"        let b:reselecting = 0
-"        return
-"    endif
-"    let mode = mode()
-"    if mode ==# 'v' || mode ==# 'V' || mode ==# "\<C-V>"
-"        let vis_pos = s:get_visual_position(mode)
-"        call s:add_record_entry(vis_pos)
-"    endif
-"endfunction
-""}}}---------------------------------------------------------------------------
+"{{{- update_record -----------------------------------------------------------
+function! s:update_record()
+    if b:reselecting == 1
+        let b:reselecting = 0
+        return
+    endif
+    let vis_pos = s:get_visual_position()
+    call s:add_record_entry(vis_pos)
+endfunction
+"}}}---------------------------------------------------------------------------
 
 "{{{- lines_added_or_removed ---------------------------------------------------
 function! s:lines_added_or_removed()
@@ -170,31 +179,14 @@ function! s:sync_record()
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- process_direction -------------------------------------------------------
-function! s:process_direction(direction)
-    if type(a:direction) == type(0)
-        let direction = a:direction*v:count1
-    elseif a:direction ==# 'first'
-        let b:vis_mark_record_pointer = 2
-        let direction = -1
-    elseif a:direction ==# 'last'
-        let b:vis_mark_record_pointer = len(b:vis_mark_record)-1
-        let direction = 1
-    endif
-    return direction
-endfunction
-"}}}---------------------------------------------------------------------------
-
 "{{{- reselect_visual_from_record ---------------------------------------------
 function! s:reselect_visual_from_record(direction)
-    let direction = s:process_direction(a:direction)
-    if b:vis_mark_record_pointer+2 >= len(b:vis_mark_record) && direction == 1 ||
-     \ b:vis_mark_record_pointer   <= 1                      && direction == -1
+    if b:vis_mark_record[0][2] == ''
         normal! gv
         return
     endif
+    call s:update_pointer(a:direction)
     let b:reselecting = 1
-    call s:update_pointer(direction)
     let [l1, c1, l2, c2, vis_mode] = s:extract_record_entry()
     execute "normal! \<ESC>"
     call cursor(l1, c1)
@@ -205,32 +197,11 @@ endfunction
 
 "======================== CREATE MAPS AND AUTOCMDS ============================
 
-function! s:get_visual_position2()
-    let [_, l1, c1, _] = getpos("'<")
-    let [_, l2, c2, _] = getpos("'>")
-    if c1 == 0
-        let c1 = 1
-    endif
-    if c2 > 1000
-        let c2 = len(getline(l2))
-    endif
-    return [[l1, c1], [l2, c2], visualmode()]
-endfunction
-
-function! s:dumb()
-    if b:reselecting == 1
-        let b:reselecting = 0
-        return
-    endif
-    let vis_pos = s:get_visual_position2()
-    call s:add_record_entry(vis_pos)
-endfunction
-
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initialise_variables(0)
 autocmd TextChanged,InsertLeave   * call <SID>sync_record()
 
-autocmd CursorMoved    * call <SID>dumb()
+autocmd CursorMoved    * call <SID>update_record()
 
 " if exists("##ModeChanged")
 "     autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
