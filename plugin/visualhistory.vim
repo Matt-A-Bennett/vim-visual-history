@@ -22,7 +22,7 @@ endif
 let g:loaded_visual_history = 1
 "}}}---------------------------------------------------------------------------
 
-"{{{- initialise variables -----------------------------------------------------
+"{{{- initialise variables ----------------------------------------------------
 function! s:initialise_variables(reset)
     if !exists("b:vis_mark_record") || a:reset == 1
         let b:vis_mark_record = []
@@ -40,25 +40,6 @@ endfunction
 "}}}---------------------------------------------------------------------------
 
 "================================ FUNCTIONS ===================================
-
-""{{{- turn_on_cursor_tracking -------------------------------------------------
-"function! s:turn_on_cursor_tracking()
-"    " call s:update_cursor_pos()
-"    augroup cursor_tracking
-"        autocmd!
-"        autocmd CursorMoved * call <SID>update_visual_mark_list()
-"    augroup END
-"endfunction
-""}}}---------------------------------------------------------------------------
-
-""{{{- turn_off_cursor_tracking ------------------------------------------------
-"function! s:turn_off_cursor_tracking()
-"    " call s:check_motion()
-"    augroup cursor_tracking
-"        autocmd!
-"    augroup END
-"endfunction
-""}}}---------------------------------------------------------------------------
 
 "{{{- update_pointer ----------------------------------------------------------
 function! s:update_pointer(direction)
@@ -82,15 +63,28 @@ endfunction
 
 "{{{- get_visual_position -----------------------------------------------------
 function! s:get_visual_position()
-    let [_, l1, c1, _] = getpos("'<")
-    let [_, l2, c2, _] = getpos("'>")
+    let mode = mode()
+    if mode == 'v' || mode == 'V' || mode == "\<C-V>"
+        let [_, l1, c1, _] = getpos("v")
+        let [_, l2, c2, _] = getpos(".")
+    else
+        let [_, l1, c1, _] = getpos("'<")
+        let [_, l2, c2, _] = getpos("'>")
+        let mode = visualmode()
+    endif
     if c1 == 0
         let c1 = 1
+    endif
+    if c1 > 1000
+        let c1 = len(getline(l1))
+    endif
+    if c2 == 0
+        let c2 = 1
     endif
     if c2 > 1000
         let c2 = len(getline(l2))
     endif
-    return [[l1, c1], [l2, c2], visualmode()]
+    return [[l1, c1], [l2, c2], mode]
 endfunction
 "}}}---------------------------------------------------------------------------
 
@@ -107,7 +101,7 @@ function! s:add_record_entry(vis_pos)
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- remove_record_entry -----------------------------------------------------------
+"{{{- remove_record_entry -----------------------------------------------------
 function! s:remove_record_entry(entry_number)
     call remove(b:vis_mark_record, a:entry_number)
     if b:vis_mark_record_pointer >= a:entry_number
@@ -141,12 +135,18 @@ endfunction
 
 "{{{- update_record -----------------------------------------------------------
 function! s:update_record()
+    " echomsg 'moved!'
     if b:reselecting == 1
         let b:reselecting = 0
         return
     endif
     " if s:selection_checks('check') > 0
         let vis_pos = s:get_visual_position()
+        if vis_pos[-1] == 'v' || vis_pos[-1] == 'V' || vis_pos[-1] == "\<C-V>"
+            " do nothing
+        else
+            let vis_pos[-1] = 'v'
+        endif
         call s:add_record_entry(vis_pos)
     " endif
 endfunction
