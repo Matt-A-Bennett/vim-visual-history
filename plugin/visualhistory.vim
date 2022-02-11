@@ -9,7 +9,7 @@
 "                                                                                        
 "
 " Author:       Matthew Bennett
-" Version:      0.7.1
+" Version:      0.8.0
 " License:      Same as Vim's (see :help license)
 "
 "
@@ -35,7 +35,7 @@ function! s:initialise_variables(reset)
         endif
     endif
     let b:reselecting = 0
-    let b:prev_cursor_pos = getpos('.')
+    let b:selection_check_count = 3
 endfunction
 "}}}---------------------------------------------------------------------------
 
@@ -127,18 +127,32 @@ function! s:extract_record_entry()
 endfunction
 "}}}---------------------------------------------------------------------------
 
+"{{{- selection_checks --------------------------------------------------------
+function! s:selection_checks(switch)
+    if exists("##ModeChanged")
+        if type(a:switch) == type(0)
+            let b:selection_check_count = a:switch
+        endif
+        let b:selection_check_count -= 1
+    endif
+    return b:selection_check_count
+endfunction
+"}}}---------------------------------------------------------------------------
+
 "{{{- update_record -----------------------------------------------------------
 function! s:update_record()
     if b:reselecting == 1
         let b:reselecting = 0
         return
     endif
-    let vis_pos = s:get_visual_position()
-    call s:add_record_entry(vis_pos)
+    " if s:selection_checks('check') > 0
+        let vis_pos = s:get_visual_position()
+        call s:add_record_entry(vis_pos)
+    " endif
 endfunction
 "}}}---------------------------------------------------------------------------
 
-"{{{- lines_added_or_removed ---------------------------------------------------
+"{{{- lines_added_or_removed --------------------------------------------------
 function! s:lines_added_or_removed()
     let b:current_number_of_lines = line('$')
     let difference = b:current_number_of_lines - b:old_number_of_lines
@@ -181,7 +195,7 @@ endfunction
 
 "{{{- reselect_visual_from_record ---------------------------------------------
 function! s:reselect_visual_from_record(direction)
-    if b:vis_mark_record[0][2] == ''
+    if len(b:vis_mark_record) == 1 && b:vis_mark_record[0][2] == ''
         normal! gv
         return
     endif
@@ -200,14 +214,11 @@ endfunction
 "{{{- set up autocmds ---------------------------------------------------------
 autocmd BufEnter                  * call <SID>initialise_variables(0)
 autocmd TextChanged,InsertLeave   * call <SID>sync_record()
-
-autocmd CursorMoved    * call <SID>update_record()
+autocmd CursorMoved               * call <SID>update_record()
 
 " if exists("##ModeChanged")
-"     autocmd ModeChanged *:[vV]    call <SID>turn_on_cursor_tracking()
-"     autocmd ModeChanged [vV]:*    call <SID>turn_off_cursor_tracking()
-" else
-"     autocmd CursorMoved           * call <SID>update_visual_mark_list()
+"     autocmd ModeChanged *:[vV]    call <SID>selection_checks(0)
+"     autocmd ModeChanged [vV]:*    call <SID>selection_checks(3)
 " endif
 "}}}---------------------------------------------------------------------------
 
