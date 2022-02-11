@@ -44,15 +44,16 @@ In visual and in normal mode, 4 commands are defined:
        ]V : Reselect last visual selection
 ```
 
-And the following Ex command:
+Note that the visual history is only updated when the cursor moves (in any
+mode). For example, a single press of `V` to select an line can't be
+immediately reselected with the above commands (although |gv| will still work).
+
+
+The following Ex command is also available:
 
 ```
 :ClearVisualHistory : Remove all visual history for the local buffer
 ```
-
-Note that only visual selections where the cursor moves are remembered (so
-doing `V` to select a line won't work unless you additionally move the cursor
-at least one character to the left or right).
 
 ### Settings
 

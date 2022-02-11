@@ -135,7 +135,6 @@ endfunction
 
 "{{{- update_record -----------------------------------------------------------
 function! s:update_record()
-    " echomsg 'moved!'
     if b:reselecting == 1
         let b:reselecting = 0
         return
